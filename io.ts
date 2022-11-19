@@ -21,7 +21,7 @@ interface SocketData {
 }
 
 
-// Not elegant, could benefit from using a class
+// Not elegant, could benefit from using a class or something
 let io: any
 
 
