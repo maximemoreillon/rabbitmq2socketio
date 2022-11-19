@@ -15,17 +15,13 @@ const {
     PORT = 80
 } = process.env
 
-
 const app = express()
 app.use(cors())
 
 const server = http.createServer(app)
 
-
 ioInit(server)
 rabbitMqInit()
-
-// TODO: root route for app info
 
 
 app.get('/', (req, res) => {
