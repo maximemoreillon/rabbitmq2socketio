@@ -10,26 +10,25 @@ const {
 } = process.env
 
 
-
-
-
-
-
 const consumeCallback = (message: any) => {
     const messageString = message.content.toString()
     const {topic, data} = JSON.parse(messageString)
     getIo().emit(topic, data)
 }
 
+const init = async () => {
+    const connection = await amqplib.connect(RABBITMQ_URL)
+    console.log('[RabbitMQ] connected')
+    const channel = await connection.createChannel()
+    console.log('[RabbitMQ] Channel created')
+    await channel.assertQueue(RABBITMQ_QUEUE, { durable: false });
+    const consumeOptions = { noAck: true }
+    channel.consume(RABBITMQ_QUEUE, consumeCallback, consumeOptions)
+}
 
-export default {
-    init: async () => {
-        const connection = await amqplib.connect(RABBITMQ_URL)
-        console.log('[RabbitMQ] connected')
-        const channel = await connection.createChannel()
-        console.log('[RabbitMQ] Channel created')
-        await channel.assertQueue(RABBITMQ_QUEUE, { durable: false });
-        const consumeOptions = { noAck: true }
-        channel.consume(RABBITMQ_QUEUE, consumeCallback, consumeOptions)
-    }
+
+export {
+    init,
+    RABBITMQ_URL as url,
+    RABBITMQ_QUEUE as queue,
 }

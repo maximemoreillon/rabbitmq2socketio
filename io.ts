@@ -25,7 +25,7 @@ interface SocketData {
 let io: any
 
 
-const ioInit = (server: http.Server) => {
+const init = (server: http.Server) => {
     const socketio_options = { cors: { origin: '*' } }
     const io = new Server<
         ClientToServerEvents,
@@ -44,7 +44,7 @@ const ioInit = (server: http.Server) => {
 const getIo = () => io
 
 export {
-    ioInit,
+    init,
     getIo
 }
 
