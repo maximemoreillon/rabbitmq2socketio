@@ -22,7 +22,7 @@ const init = async () => {
     const channel = await connection.createChannel()
     console.log('[RabbitMQ] Channel created')
     await channel.assertQueue(RABBITMQ_QUEUE, { durable: false });
-    const consumeOptions = { noAck: true }
+    const consumeOptions = { noAck: false }
     channel.consume(RABBITMQ_QUEUE, consumeCallback, consumeOptions)
 }
 

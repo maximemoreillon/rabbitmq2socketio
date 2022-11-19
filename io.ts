@@ -27,7 +27,7 @@ let io: any
 
 const init = (server: http.Server) => {
     const socketio_options = { cors: { origin: '*' } }
-    const io = new Server<
+    io = new Server<
         ClientToServerEvents,
         ServerToClientEvents,
         InterServerEvents,
@@ -35,7 +35,7 @@ const init = (server: http.Server) => {
     >(server, socketio_options)
     console.log('[Socket.io] Initialized')
 
-    io.on('connection', (socket) => {
+    io.on('connection', (socket: any) => {
         console.log(`[Socket.io] socket ${socket.id} connected`);
     })
 
