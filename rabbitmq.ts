@@ -13,7 +13,7 @@ const queues = RABBITMQ_QUEUES.split(',')
 
 
 const messageCallback = (message: any) => {
-    const queue = message.routingKey
+    const queue = message.fields.routingKey
     const messageString = message.content.toString()
     const messageJson = JSON.parse(messageString)
     getIo().emit(queue, messageJson)
