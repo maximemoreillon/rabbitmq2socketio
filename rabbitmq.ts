@@ -6,29 +6,39 @@ dotenv.config()
 
 const {
     RABBITMQ_URL = 'amqp://localhost',
-    RABBITMQ_QUEUE = 'defaultQueue'
+    RABBITMQ_QUEUES = '',
 } = process.env
 
+const queues = RABBITMQ_QUEUES.split(',')
 
-const consumeCallback = (message: any) => {
+
+const messageCallback = (message: any) => {
+    const queue = message.routingKey
     const messageString = message.content.toString()
-    const {topic, data} = JSON.parse(messageString)
-    getIo().emit(topic, data)
+    const messageJson = JSON.parse(messageString)
+    getIo().emit(queue, messageJson)
 }
 
 const init = async () => {
+
     const connection = await amqplib.connect(RABBITMQ_URL)
     console.log('[RabbitMQ] connected')
+
     const channel = await connection.createChannel()
     console.log('[RabbitMQ] Channel created')
-    await channel.assertQueue(RABBITMQ_QUEUE, { durable: false });
+
     const consumeOptions = { noAck: false }
-    channel.consume(RABBITMQ_QUEUE, consumeCallback, consumeOptions)
+
+    for await (const queue of queues) {
+        // AssertQueue will create the queue if it does not exist
+        await channel.assertQueue(queue, { durable: false })
+        channel.consume(queue, messageCallback, consumeOptions)
+    }
 }
 
 
 export {
     init,
     RABBITMQ_URL as url,
-    RABBITMQ_QUEUE as queue,
+    queues as queues,
 }

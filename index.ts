@@ -5,7 +5,7 @@ import cors from 'cors'
 import { 
     init as rabbitMqInit,
     url as rabbitMqUrl,
-    queue as rabbitMqQueue
+    queues as rabbitMqQueues
 } from './rabbitmq'
 import { init as ioInit } from './io'
 
@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
         application_name: 'rabbitmq2socketio',
         rabbitMq: {
             url: rabbitMqUrl,
-            queue: rabbitMqQueue
+            queues: rabbitMqQueues
         }
     })
 })
