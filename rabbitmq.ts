@@ -19,10 +19,19 @@ const messageCallback = (message: any) => {
     getIo().emit(queue, messageJson)
 }
 
+const connectionErrorCallback = (error: any) => {
+    console.log(`[RabbitMQ] Connection lost`)
+    init()
+}
+
+
 const init = async () => {
 
     const connection = await amqplib.connect(RABBITMQ_URL)
     console.log('[RabbitMQ] connected')
+
+    connection.on('error', connectionErrorCallback);
+
 
     const channel = await connection.createChannel()
     console.log('[RabbitMQ] Channel created')
