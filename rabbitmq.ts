@@ -24,6 +24,10 @@ const connectionErrorCallback = (error: any) => {
     init()
 }
 
+const channelErrorCallback = (error: any) => {
+    console.log(error)
+    init()
+}
 
 const init = async () => {
 
@@ -35,6 +39,8 @@ const init = async () => {
 
     const channel = await connection.createChannel()
     console.log('[RabbitMQ] Channel created')
+
+    channel.on('error', channelErrorCallback)
 
     const consumeOptions = { noAck: false }
 
