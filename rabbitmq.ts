@@ -1,6 +1,6 @@
 import amqplib from 'amqplib'
 import dotenv from 'dotenv'
-import { getIo } from './io'
+import { io } from '.'
 
 dotenv.config()
 
@@ -16,7 +16,7 @@ const messageCallback = (message: any) => {
     const queue = message.fields.routingKey
     const messageString = message.content.toString()
     const messageJson = JSON.parse(messageString)
-    getIo().emit(queue, messageJson)
+    io.emit(queue, messageJson)
 }
 
 const connectionErrorCallback = (error: any) => {
