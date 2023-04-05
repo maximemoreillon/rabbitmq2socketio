@@ -8,13 +8,6 @@ const { RABBITMQ_URL = "amqp://localhost", RABBITMQ_QUEUES = "" } = process.env
 
 const queues = RABBITMQ_QUEUES.split(",")
 
-const messageCallback = (message: any) => {
-  const queue = message.fields.routingKey
-  const messageString = message.content.toString()
-  const messageJson = JSON.parse(messageString)
-  io.emit(queue, messageJson)
-}
-
 const connectionErrorCallback = (error: any) => {
   console.log(`[RabbitMQ] Connection lost`)
   init()
@@ -38,10 +31,20 @@ const init = async () => {
 
     channel.on("error", channelErrorCallback)
 
+    const messageCallback = (message: any) => {
+      const queue = message.fields.routingKey
+      const messageString = message.content.toString()
+      const messageJson = JSON.parse(messageString)
+      io.emit(queue, messageJson)
+      // Acknowledge
+      channel.ack(message)
+    }
+
     const consumeOptions = { noAck: false }
 
     for await (const queue of queues) {
       // AssertQueue will create the queue if it does not exist
+      console.log(`[RabbitMQ] Registering consumer for queue ${queue}`)
       await channel.assertQueue(queue, { durable: false })
       channel.consume(queue, messageCallback, consumeOptions)
     }
