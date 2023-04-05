@@ -43,9 +43,10 @@ const init = async () => {
     const consumeOptions = { noAck: false }
 
     for await (const queue of queues) {
-      // AssertQueue will create the queue if it does not exist
       console.log(`[RabbitMQ] Registering consumer for queue ${queue}`)
+      // AssertQueue will create the queue if it does not exist
       await channel.assertQueue(queue, { durable: false })
+      // TODO: Figure out how to automatically ack
       channel.consume(queue, messageCallback, consumeOptions)
     }
   } catch (error) {
