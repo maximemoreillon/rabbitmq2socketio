@@ -1,11 +1,9 @@
 stages:
   - build
 
-
 image: moreillon/ci-dind
 services:
-  - name: docker:19.03.12-dind
-
+  - name: docker:24.0.7-dind
 
 variables:
   APPLICATION_NAME: rabbitmq2socketio
@@ -25,4 +23,3 @@ build:
     - docker tag ${CONTAINER_IMAGE} ${CONTAINER_IMAGE_TAGGED}
     - docker push ${CONTAINER_IMAGE}
     - docker push ${CONTAINER_IMAGE_TAGGED}
-
